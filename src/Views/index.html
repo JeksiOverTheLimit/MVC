@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../../assets/styles/style.css">
+</head>
+
+<body>
+    <div id="overlay"></div>
+    <div id="form-container">
+        <form action="../Controllers/PersonController.php" method="post">
+           
+            <input type="hidden" name="firstName" id="firstName">
+            <input type="hidden" name="lastName" id="lastName">
+            <input type="hidden" name="phone" id="phone">
+            <select id="phoneNumbersSelect" name="phoneNumbersSelect"></select>
+            <input type="submit" name="submit" id="submitBTN" value="Edit Phone">
+            <input type="submit" name="newNumber" value="Add New Number" id="newNumber">
+        </form>
+    </div>
+
+    <form>
+        <p>First Name</p>
+        
+        <input type="text" name="firstNameInput" id="firstNameInput">
+        <p>Last Name</p>
+        <input type="text" name="lastNameInput" id="lastNameInput">
+        <p>Phone Number</p>
+        <input type="text" name="phoneInput" id="phoneInput">
+        <input type="button" value="Submit" onclick="submitForm(event)">
+    </form>
+    <div id="phone-list"></div>
+    <script>
+        
+      
+
+        function submitForm(event) {
+            event.preventDefault(); // добавете този ред
+        
+            // Get values from the input fields
+            
+            const firstName = document.getElementById("firstNameInput").value;
+            const lastName = document.getElementById("lastNameInput").value;
+            const phone = document.getElementById("phoneInput").value;
+        
+            // Set values in the hidden fields
+            
+            document.getElementById("firstName").value = firstName;
+            document.getElementById("lastName").value = lastName;
+            document.getElementById("phone").value = phone;
+            
+            
+            
+                      
+            fetch("../Database/data.json")
+                .then(response => response.json())
+                .then(data => {
+              
+                    const existingEntry = data.find(entry => entry.firstName === firstName && entry.lastName === lastName);
+        
+                    if (existingEntry) {
+        
+                        document.getElementById("overlay").style.display = "block";
+                        document.getElementById("form-container").style.display = "block";
+                        document.getElementById("submitBTN").value = "Edit Phone";
+                        document.getElementById("newNumber").style.display = "block";
+        
+                        const phoneNumbersSelect = document.getElementById("phoneNumbersSelect");
+        
+        
+                        existingEntry.phoneNumbers.forEach(function(phoneNumber) {
+                            const option = document.createElement("option");
+                            option.value = phoneNumber;
+                            option.text = phoneNumber;
+                            phoneNumbersSelect.appendChild(option);
+        
+        
+                        });
+        
+                    } else {
+        
+                       const addButton = document.getElementById("submitBTN").click();
+        
+        
+                    }
+                });
+        }
+        
+    </script>
+    </body>
+    </html>
